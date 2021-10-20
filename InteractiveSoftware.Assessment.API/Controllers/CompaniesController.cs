@@ -18,17 +18,16 @@ namespace InteractiveSoftware.Assessment.API.Controllers
     {
 
 	   private readonly InteractiveSoftwareAssessmentContext _context;
-	   
+
 	   private readonly ILogger<CompaniesController> _logger;
 
 	   public CompaniesController(ILogger<CompaniesController> logger, InteractiveSoftwareAssessmentContext context)
 	   {
 		  _logger = logger;
 		  _context = context;
-		  
+
 		  if (_context.Company.FirstOrDefault(x => x.Id == 1) == null)
 		  {
-
 			 var customer = new Company
 			 {
 				Id = 1,
@@ -76,10 +75,10 @@ namespace InteractiveSoftware.Assessment.API.Controllers
 			 return null;
 		  }
 
-		  var company = await _context.Company
+		  var company = _context.Company
 			 .Include(c => c.CompanyAddress)
 			 .Include(c => c.CompanyContact)
-			 .FirstOrDefaultAsync(m => m.Id == id);
+			 .FirstOrDefault(m => m.Id == id);
 		  if (company == null)
 		  {
 			 return null;
@@ -117,7 +116,7 @@ namespace InteractiveSoftware.Assessment.API.Controllers
 			 return null;
 		  }
 
-		  var company = await _context.Company.Include(c => c.CompanyAddress).Include(c => c.CompanyContact).FirstOrDefaultAsync(x => x.Id == id);
+		  var company = _context.Company.Include(c => c.CompanyAddress).Include(c => c.CompanyContact).FirstOrDefault(x => x.Id == id);
 		  if (company == null)
 		  {
 			 return null;
@@ -166,10 +165,10 @@ namespace InteractiveSoftware.Assessment.API.Controllers
 			 return null;
 		  }
 
-		  var company = await _context.Company
+		  var company = _context.Company
 			 .Include(c => c.CompanyAddress)
 			 .Include(c => c.CompanyContact)
-			 .FirstOrDefaultAsync(m => m.Id == id);
+			 .FirstOrDefault(m => m.Id == id);
 		  if (company == null)
 		  {
 			 return null;

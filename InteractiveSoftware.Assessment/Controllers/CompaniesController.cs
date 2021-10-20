@@ -22,9 +22,9 @@ namespace InteractiveSoftware.Assessment.Controllers
 	   {
 		  _context = context;
 		  _assessmentService = assessmentService;
+
 		  if (_context.Company.FirstOrDefault(x => x.Id == 1) == null)
 		  {
-
 			 var customer = new Company
 			 {
 				Id = 1,
@@ -58,7 +58,7 @@ namespace InteractiveSoftware.Assessment.Controllers
 	   
 	   public async Task<IActionResult> Index()
 	   {
-		  var companies = await _assessmentService.GetCompanies(new System.Threading.CancellationToken());
+		  var companies = await _assessmentService.GetCompanies();
 		  return View(companies);
 	   }
 
@@ -70,10 +70,8 @@ namespace InteractiveSoftware.Assessment.Controllers
 			 return NotFound();
 		  }
 
-		  var company = await _context.Company
-			 .Include(c => c.CompanyAddress)
-			 .Include(c => c.CompanyContact)
-			 .FirstOrDefaultAsync(m => m.Id == id);
+		  var company = await _assessmentService.GetCompanyById(id.Value);
+		  
 		  if (company == null)
 		  {
 			 return NotFound();
@@ -85,8 +83,8 @@ namespace InteractiveSoftware.Assessment.Controllers
 	   // GET: Companies/Create
 	   public IActionResult Create()
 	   {
-		  ViewData["AddressId"] = new SelectList(_context.Set<Address>(), "Id", "Id");
-		  ViewData["ContactId"] = new SelectList(_context.Set<Contact>(), "Id", "Id");
+		  ViewData["AddressId"] = new SelectList(_assessmentService.GetAddresses().GetAwaiter().GetResult(), "Id", "Line1");
+		  ViewData["ContactId"] = new SelectList(_assessmentService.GetContacts().GetAwaiter().GetResult(), "Id", "EmailAdress");
 		  return View();
 	   }
 
@@ -99,12 +97,11 @@ namespace InteractiveSoftware.Assessment.Controllers
 	   {
 		  if (ModelState.IsValid)
 		  {
-			 _context.Add(company);
-			 await _context.SaveChangesAsync();
+			 await _assessmentService.CreateCompany(company);
 			 return RedirectToAction(nameof(Index));
 		  }
-		  ViewData["AddressId"] = new SelectList(_context.Set<Address>(), "Id", "Id", company.AddressId);
-		  ViewData["ContactId"] = new SelectList(_context.Set<Contact>(), "Id", "Id", company.ContactId);
+		  ViewData["AddressId"] = new SelectList(_assessmentService.GetAddresses().GetAwaiter().GetResult(), "Id", "Line1", company.AddressId);
+		  ViewData["ContactId"] = new SelectList(_assessmentService.GetContacts().GetAwaiter().GetResult(), "Id", "EmailAdress", company.ContactId);
 		  return View(company);
 	   }
 
@@ -116,13 +113,13 @@ namespace InteractiveSoftware.Assessment.Controllers
 			 return NotFound();
 		  }
 
-		  var company = await _context.Company.Include(c => c.CompanyAddress).Include(c => c.CompanyContact).FirstOrDefaultAsync(x => x.Id == id);
+		  var company = await _assessmentService.GetCompanyById(id.Value);
 		  if (company == null)
 		  {
 			 return NotFound();
 		  }
-		  ViewData["AddressId"] = new SelectList(_context.Set<Address>(), "Id", "Id", company.AddressId);
-		  ViewData["ContactId"] = new SelectList(_context.Set<Contact>(), "Id", "Id", company.ContactId);
+		  ViewData["AddressId"] = new SelectList(_assessmentService.GetAddresses().GetAwaiter().GetResult(), "Id", "Line1", company.AddressId);
+		  ViewData["ContactId"] = new SelectList(_assessmentService.GetContacts().GetAwaiter().GetResult(), "Id", "EmailAdress", company.ContactId);
 		  return View(company);
 	   }
 
@@ -137,13 +134,13 @@ namespace InteractiveSoftware.Assessment.Controllers
 		  {
 			 return NotFound();
 		  }
+		  var updatedCompany = new Company();
 
 		  if (ModelState.IsValid)
 		  {
 			 try
 			 {
-				_context.Update(company);
-				await _context.SaveChangesAsync();
+				updatedCompany = await _assessmentService.UpdateCompany(company);
 			 }
 			 catch (DbUpdateConcurrencyException)
 			 {
@@ -158,9 +155,9 @@ namespace InteractiveSoftware.Assessment.Controllers
 			 }
 			 return RedirectToAction(nameof(Index));
 		  }
-		  ViewData["AddressId"] = new SelectList(_context.Set<Address>(), "Id", "Id", company.AddressId);
-		  ViewData["ContactId"] = new SelectList(_context.Set<Contact>(), "Id", "Id", company.ContactId);
-		  return View(company);
+		  ViewData["AddressId"] = new SelectList(_assessmentService.GetAddresses().GetAwaiter().GetResult(), "Id", "Line1", updatedCompany.AddressId);
+		  ViewData["ContactId"] = new SelectList(_assessmentService.GetContacts().GetAwaiter().GetResult(), "Id", "EmailAdress", updatedCompany.ContactId);
+		  return View(updatedCompany);
 	   }
 
 	   // GET: Companies/Delete/5
@@ -170,11 +167,8 @@ namespace InteractiveSoftware.Assessment.Controllers
 		  {
 			 return NotFound();
 		  }
+		  var company = await _assessmentService.GetCompanyById(id.Value);
 
-		  var company = await _context.Company
-			 .Include(c => c.CompanyAddress)
-			 .Include(c => c.CompanyContact)
-			 .FirstOrDefaultAsync(m => m.Id == id);
 		  if (company == null)
 		  {
 			 return NotFound();
@@ -188,15 +182,14 @@ namespace InteractiveSoftware.Assessment.Controllers
 	   [ValidateAntiForgeryToken]
 	   public async Task<IActionResult> DeleteConfirmed(int id)
 	   {
-		  var company = await _context.Company.FindAsync(id);
-		  _context.Company.Remove(company);
-		  await _context.SaveChangesAsync();
+		  var companyId = await _assessmentService.DeleteCompany(id);
 		  return RedirectToAction(nameof(Index));
 	   }
 
 	   private bool CompanyExists(int id)
 	   {
-		  return _context.Company.Any(e => e.Id == id);
+		  var company = _assessmentService.GetCompanyById(id).GetAwaiter().GetResult();
+		  return company.Id > 0;
 	   }
     }
 }

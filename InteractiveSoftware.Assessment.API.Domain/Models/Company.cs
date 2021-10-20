@@ -11,9 +11,11 @@ namespace InteractiveSoftware.Assessment.API.Domain.Models
         public string Name { get; set; }
         [Display(Name = "Registration Number")]
         public string RegistrationNumber { get; set; }
+        [Display(Name = "Address")]
         public int AddressId { get; set; }
         [Display(Name = "Address")]
         public virtual Address CompanyAddress { get; set; }
+        [Display(Name = "Contact")]
         public int ContactId { get; set; }
         [Display(Name = "Contact")]
         public virtual Contact CompanyContact { get; set; }
