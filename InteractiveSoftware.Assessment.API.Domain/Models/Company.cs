@@ -1,18 +1,21 @@
+using InteractiveSoftware.Assessment.API.Domain.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace InteractiveSoftware.Assessment.Models
+namespace InteractiveSoftware.Assessment.API.Domain.Models
 {
     public class Company
     {
         public int Id { get; set; }
-        [Display(Name = "Company Name")]
+        [Display(Name = "Name")]
         public string Name { get; set; }
-        [Display(Name = "Company Registration Number")]
+        [Display(Name = "Registration Number")]
         public string RegistrationNumber { get; set; }
         public int AddressId { get; set; }
+        [Display(Name = "Address")]
         public virtual Address CompanyAddress { get; set; }
         public int ContactId { get; set; }
+        [Display(Name = "Contact")]
         public virtual Contact CompanyContact { get; set; }
     }
 }

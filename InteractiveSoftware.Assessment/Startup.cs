@@ -9,8 +9,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using InteractiveSoftware.Assessment.Data;
 using InteractiveSoftware.Assessment.Models;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.IO;
+using InteractiveSoftware.Assessment.API.Domain.Infrastructure;
+using InteractiveSoftware.Assessment.API.Domain;
+using Juta.WebAPI.Service;
+using InteractiveSoftware.Assessment.API.Persistance;
 
 namespace InteractiveSoftware.Assessment
 {
@@ -27,11 +33,15 @@ namespace InteractiveSoftware.Assessment
 	   public void ConfigureServices(IServiceCollection services)
 	   {
 		  services.AddControllersWithViews();
-
-
 		  services.AddDbContext<InteractiveSoftwareAssessmentContext>(options =>
 				options.UseInMemoryDatabase(databaseName: "Test"));
 
+		  services.Configure<SettingsOptions>(settings =>
+		  {
+			 settings.AssessmentServiceBaseUrl = Configuration.GetValue<string>("AssessmentServiceBaseUrl");
+		  });
+
+		  services.AddScoped<IAssessmentService, AssessmentService>();
 	   }
 
 	   // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +57,7 @@ namespace InteractiveSoftware.Assessment
 			 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 			 app.UseHsts();
 		  }
+
 		  app.UseHttpsRedirection();
 		  app.UseStaticFiles();
 

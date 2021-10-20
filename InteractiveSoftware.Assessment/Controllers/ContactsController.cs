@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using InteractiveSoftware.Assessment.Data;
 using InteractiveSoftware.Assessment.Models;
+using InteractiveSoftware.Assessment.API.Persistance;
+using InteractiveSoftware.Assessment.API.Domain.Models;
 
 namespace InteractiveSoftware.Assessment.Controllers
 {

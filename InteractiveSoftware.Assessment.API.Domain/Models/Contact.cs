@@ -1,6 +1,6 @@
 using System;
 
-namespace InteractiveSoftware.Assessment.Models
+namespace InteractiveSoftware.Assessment.API.Domain.Models
 {
     public class Contact
     {

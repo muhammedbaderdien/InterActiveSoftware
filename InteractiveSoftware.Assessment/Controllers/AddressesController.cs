@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using InteractiveSoftware.Assessment.API.Domain.Models;
+using InteractiveSoftware.Assessment.API.Persistance;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using InteractiveSoftware.Assessment.Data;
-using InteractiveSoftware.Assessment.Models;
 
 namespace InteractiveSoftware.Assessment.Controllers
 {

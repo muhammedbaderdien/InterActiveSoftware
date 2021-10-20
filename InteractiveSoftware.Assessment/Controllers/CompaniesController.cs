@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using InteractiveSoftware.Assessment.Data;
 using InteractiveSoftware.Assessment.Models;
+using InteractiveSoftware.Assessment.API.Domain.Models;
+using InteractiveSoftware.Assessment.API.Persistance;
+using InteractiveSoftware.Assessment.API.Domain;
 
 namespace InteractiveSoftware.Assessment.Controllers
 {
@@ -14,10 +16,12 @@ namespace InteractiveSoftware.Assessment.Controllers
     {
 	   private readonly InteractiveSoftwareAssessmentContext _context;
 
+	   private readonly IAssessmentService _assessmentService;
 
-	   public CompaniesController(InteractiveSoftwareAssessmentContext context)
+	   public CompaniesController(InteractiveSoftwareAssessmentContext context, IAssessmentService assessmentService)
 	   {
 		  _context = context;
+		  _assessmentService = assessmentService;
 		  if (_context.Company.FirstOrDefault(x => x.Id == 1) == null)
 		  {
 
@@ -51,10 +55,11 @@ namespace InteractiveSoftware.Assessment.Controllers
 	   }
 
 	   // GET: Companies
+	   
 	   public async Task<IActionResult> Index()
 	   {
-		  var interactiveSoftwareAssessmentContext = _context.Company.Include(c => c.CompanyAddress).Include(c => c.CompanyContact);
-		  return View(await interactiveSoftwareAssessmentContext.ToListAsync());
+		  var companies = await _assessmentService.GetCompanies(new System.Threading.CancellationToken());
+		  return View(companies);
 	   }
 
 	   // GET: Companies/Details/5

@@ -18,6 +18,17 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InteractiveSoftware.Assessment.API.Domain\InteractiveSoftware.Assessment.API.Domain.csproj" />
+    <ProjectReference Include="..\InteractiveSoftware.Assessment.API.Persistance\InteractiveSoftware.Assessment.API.Persistance.csproj" />
+    <ProjectReference Include="..\InteractiveSoftware.Assessment.Services\InteractiveSoftware.Assessment.Services.csproj" />
   </ItemGroup>
 
 </Project>
